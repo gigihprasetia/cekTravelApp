@@ -5,6 +5,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Text, View} from 'react-native';
 import {StackActions} from '@react-navigation/native';
 import DashboardMain from './Screens/DashboardMain';
+import StackHotel from './Screens/ScreenHotel/StackHotel';
 
 const Stack = createNativeStackNavigator();
 
@@ -38,6 +39,7 @@ const Routes = () => {
         }}>
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="DashboardMain" component={DashboardMain} />
+        <Stack.Screen name="Hotel" component={StackHotel} />
       </Stack.Navigator>
     </NavigationContainer>
   );
