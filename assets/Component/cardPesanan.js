@@ -5,7 +5,9 @@ import {Oranges} from '../utils';
 export default function CardPesanan() {
   return (
     <View style={{flex: 1, borderWidth: 1, borderColor: Oranges}}>
-      <Text>cardPesanan</Text>
+      <View>
+        <Text></Text>
+      </View>
     </View>
   );
 }

@@ -9,6 +9,22 @@ export const HeightScreen = Dimensions.get('window').height;
 export const Oranges = '#F37021';
 export const White = '#FFFFFF';
 export const Greens = '#2FA66B';
+export const GrayBold = '#565657';
+export const GrayFade = '#828285';
+
+export const formatter = val => {
+  if (typeof val === 'string') {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(parseInt(val));
+  } else {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(val);
+  }
+};
 
 //Fontdevices
 

@@ -10,7 +10,7 @@ import {
   Pressable,
   TouchableOpacity,
 } from 'react-native';
-import React, {Component, useState} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import adjust, {
   HeightScreen,
   Oranges,
@@ -23,7 +23,6 @@ import ModalComponent from '../../../assets/Component/ModalComponent';
 import {orange100} from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 
 const Home = props => {
-  // console.log(props, 'props');
   const {navigation} = props;
 
   return (
@@ -38,7 +37,7 @@ const Home = props => {
         style={{width: '100%'}}
         contentContainerStyle={{paddingHorizontal: 10}}
         showsVerticalScrollIndicator={false}>
-        <HeadersCom />
+        {/* <HeadersCom /> */}
         <View
           style={{
             flex: 1,
