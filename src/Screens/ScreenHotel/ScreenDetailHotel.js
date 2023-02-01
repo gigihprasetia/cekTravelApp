@@ -18,6 +18,7 @@ import Umum from '../../../assets/Component/Umum';
 import Kamar from '../../../assets/Component/Kamar';
 import Fasilitas from '../../../assets/Component/Fasilitas';
 import Lokasi from '../../../assets/Component/Lokasi';
+import LoadingPage from '../../../assets/Component/LoadingPage';
 
 export default function ScreenDetailHotel(props) {
   const [dataHotel, setDataHotel] = useState(null);
@@ -34,7 +35,7 @@ export default function ScreenDetailHotel(props) {
   }, []);
 
   return dataHotel === null ? (
-    <Text>loading</Text>
+    <LoadingPage />
   ) : (
     <SafeAreaView
       style={{flex: 1, height: HeightScreen, backgroundColor: 'white'}}>
@@ -136,7 +137,14 @@ export default function ScreenDetailHotel(props) {
             <Fasilitas fasilitas={dataHotel.facilities} />
           )}
           {showMenu === 'Kamar' && <Kamar />}
-          {showMenu === 'Lokasi' && <Lokasi />}
+          {showMenu === 'Lokasi' && (
+            <Lokasi
+              latitude={dataHotel.hotel.latitude}
+              longitude={dataHotel.hotel.longitude}
+              shortDestination={dataHotel.destinations}
+              address={dataHotel.hotel.address}
+            />
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

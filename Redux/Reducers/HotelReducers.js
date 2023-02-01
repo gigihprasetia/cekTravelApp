@@ -44,7 +44,7 @@ const HotelReducers = (state = initialState, actions) => {
       },
     };
   } else {
-    console.log(3);
+    // console.log(3);
 
     return state;
   }

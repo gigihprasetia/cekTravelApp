@@ -5,6 +5,7 @@ const Stack = createNativeStackNavigator();
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ScreenDashboardHotel from './ScreenDashboardHotel';
 import ScreenDetailHotel from './ScreenDetailHotel';
+import ScreenFilterHotel from './ScreenFilterHotel';
 
 const StackHotel = () => {
   return (
@@ -14,7 +15,7 @@ const StackHotel = () => {
           // console.log(props);
 
           const {navigation, route} = props;
-          console.log(route);
+          // console.log(route);
           return (
             <View
               style={{
@@ -39,6 +40,7 @@ const StackHotel = () => {
       }}
       initialRouteName="Dashboard Hotel">
       <Stack.Screen name="Dashboard Hotel" component={ScreenDashboardHotel} />
+      <Stack.Screen name="FilterHotel" component={ScreenFilterHotel} />
       <Stack.Screen name="DetailHotel" component={ScreenDetailHotel} />
     </Stack.Navigator>
   );

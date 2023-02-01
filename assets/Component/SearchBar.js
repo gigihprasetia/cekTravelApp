@@ -1,16 +1,33 @@
 import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import React, {Component} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import adjust, {Greens, HeightScreen, Oranges, WidthScreen} from '../utils';
+import adjust, {
+  GrayFade,
+  Greens,
+  HeightScreen,
+  Oranges,
+  WidthScreen,
+} from '../utils';
 import moment from 'moment';
 import {DatePickerModal} from 'react-native-paper-dates';
 import ModalComponent from './ModalComponent';
 import Icon from 'react-native-vector-icons/Entypo';
+import {useState} from 'react';
+import {set} from 'immer/dist/internal';
+import {Rect} from 'react-native-svg';
 
-const SearchBar = () => {
-  const [open, setOpen] = React.useState(false);
+const SearchBar = props => {
   const HotelStore = useSelector(state => state.HotelReducers.hotelRules);
   const dispatch = useDispatch();
+  const {navigation} = props;
+  // const {dataHotel} = props;
+  const [open, setOpen] = React.useState(false);
+  const [inputval, setInputVal] = React.useState('Hotel di sekitar anda');
+  const [autoActive, setAutoActive] = React.useState(false);
+  // const [autoComplete, setAutoComplete] = useState({
+  //   status: false,
+  //   data: [],
+  // });
 
   const onDismiss = React.useCallback(() => {
     setOpen(false);
@@ -27,6 +44,13 @@ const SearchBar = () => {
     },
     [setOpen, HotelStore.startDate, HotelStore.endDate],
   );
+
+  const AutocompleteLocation = React.useMemo(() => {
+    const datas = ['Yogyakarta', 'Bantul', 'Gunungkidul'].filter(val => {
+      return val.toLowerCase().search(inputval.toLowerCase()) != -1;
+    });
+    return datas;
+  }, [inputval]);
 
   return (
     <View
@@ -48,6 +72,7 @@ const SearchBar = () => {
           <Text style={{fontSize: adjust(10), color: 'white', marginBottom: 5}}>
             Location
           </Text>
+
           <View
             style={{
               width: '100%',
@@ -65,10 +90,45 @@ const SearchBar = () => {
               style={{paddingHorizontal: adjust(5)}}
             />
             <TextInput
-              style={{paddingHorizontal: 10, flex: 1}}
+              style={{paddingHorizontal: 10, flex: 1, color: GrayFade}}
               placeholder={'location'}
+              value={inputval}
+              onChangeText={e => setInputVal(e)}
+              onFocus={() => {
+                setInputVal('');
+                setAutoActive(true);
+              }}
             />
           </View>
+          {/* AUTOCOMPLETE */}
+          {autoActive && (
+            <View
+              style={{
+                position: 'absolute',
+                width: '100%',
+                padding: 5,
+                backgroundColor: 'white',
+                zIndex: 40,
+                top: 60,
+                borderWidth: 0.5,
+                borderColor: 'gray',
+                borderRadius: 5,
+              }}>
+              {AutocompleteLocation.map((val, index) => {
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    style={{paddingVertical: 5}}
+                    onPress={() => {
+                      setInputVal(val);
+                      setAutoActive(false);
+                    }}>
+                    <Text>{val}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          )}
         </View>
         <View>
           <Text style={{fontSize: adjust(10), color: 'white', marginBottom: 5}}>
@@ -368,6 +428,7 @@ const SearchBar = () => {
               />
             </View>
             <TouchableOpacity
+              onPress={() => navigation.push('FilterHotel')}
               style={{
                 width: '45%',
                 height: HeightScreen * 0.055,
