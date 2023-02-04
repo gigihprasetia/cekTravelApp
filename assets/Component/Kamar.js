@@ -1,35 +1,89 @@
-import {Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {Component} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import adjust, {Greens, HeightScreen, Oranges, WidthScreen} from '../utils';
+import adjust, {
+  GrayBold,
+  Greens,
+  HeightScreen,
+  Oranges,
+  WidthScreen,
+} from '../utils';
 import moment from 'moment';
 import {DatePickerModal} from 'react-native-paper-dates';
 import ModalComponent from './ModalComponent';
 import Icon from 'react-native-vector-icons/Entypo';
 import TabelPesananRoomHotel from './TabelPesananRoomHotel';
+import CardHotel from './cardHotel';
+import CardRoom from './CardRoom';
+import {useState} from 'react';
+import {getRoomAvaliable} from '../API/funtionPost';
+import {ActivityIndicator} from 'react-native';
 const Kamar = props => {
-  const [open, setOpen] = React.useState(false);
-  const HotelStore = useSelector(state => state.HotelReducers.hotelRules);
   const dispatch = useDispatch();
-
+  const {room} = props;
+  const {navigation} = props;
+  const {hotel} = props;
+  const [open, setOpen] = React.useState(false);
+  const [rooms, setRooms] = useState([...room.data]);
+  const {slug} = props;
+  const [loading, setOnLoading] = useState(false);
   const onDismiss = React.useCallback(() => {
     setOpen(false);
   }, [setOpen]);
 
+  const searchField = useSelector(state => state.HotelReducers.hotelRules);
+  const hotelStore = useSelector(state => state);
+
   const onConfirm = React.useCallback(
     ({startDate, endDate}) => {
+      const diffTime = endDate.getTime() - startDate.getTime();
+      const diffDay = diffTime / (1000 * 3600 * 24);
+
+      // console.log(Math.floor(diffDay));
       setOpen(false);
       dispatch({
         type: 'setDate',
         startDate,
         endDate,
+        total_night: Math.floor(diffDay),
       });
     },
-    [setOpen, HotelStore.startDate, HotelStore.endDate],
+    [setOpen, searchField.startDate, searchField.endDate],
   );
 
+  // console.log(searchField);
+  // console.log(hotelStore);
   return (
     <View style={{flex: 1}}>
+      <View>
+        <View style={{borderBottomWidth: 1, borderBottomColor: Oranges}}>
+          <Text style={{fontSize: adjust(12), color: Oranges, marginBottom: 5}}>
+            Kamar Yang Tersedia
+          </Text>
+        </View>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          <View style={{display: 'flex', flexDirection: 'row'}}>
+            {rooms.map((val, index) => {
+              return (
+                <View key={index} style={{width: WidthScreen * 0.4}}>
+                  {/* <CardHotel /> */}
+                  {loading ? (
+                    <ActivityIndicator color={Oranges} />
+                  ) : (
+                    <CardRoom hotel={hotel} data={val} />
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        </ScrollView>
+      </View>
       <View
         style={{
           flex: 1,
@@ -41,13 +95,13 @@ const Kamar = props => {
           style={{
             width: '100%',
 
-            backgroundColor: Oranges,
+            backgroundColor: 'white',
             borderRadius: 5,
             padding: 5,
           }}>
           <View>
             <Text
-              style={{fontSize: adjust(10), color: 'white', marginBottom: 5}}>
+              style={{fontSize: adjust(10), color: GrayBold, marginBottom: 5}}>
               CheckIn - CheckOut
             </Text>
             <TouchableOpacity
@@ -60,10 +114,12 @@ const Kamar = props => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                borderWidth: 1,
+                borderColor: GrayBold,
               }}>
               <Text style={{fontSize: adjust(9), color: 'black'}}>
-                {moment(HotelStore.startDate).format('dddd, DD-MM-yyyy')} -{' '}
-                {moment(HotelStore.endDate).format('dddd, DD-MM-yyyy')}
+                {moment(searchField.startDate).format('dddd, DD-MM-yyyy')} -{' '}
+                {moment(searchField.endDate).format('dddd, DD-MM-yyyy')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -72,20 +128,21 @@ const Kamar = props => {
             mode="range"
             visible={open}
             onDismiss={onDismiss}
-            startDate={HotelStore.startDate}
-            endDate={HotelStore.endDate}
+            startDate={searchField.startDate}
+            endDate={searchField.endDate}
             onConfirm={onConfirm}
           />
 
           <View>
             <Text
-              style={{fontSize: adjust(10), color: 'white', marginBottom: 5}}>
+              style={{fontSize: adjust(10), color: GrayBold, marginBottom: 5}}>
               Kamar
             </Text>
 
             <ModalComponent
-              ButtonCustoms={() => (
-                <View
+              ButtonCustoms={({open}) => (
+                <TouchableOpacity
+                  onPress={open}
                   style={{
                     width: '100%',
                     height: 40,
@@ -94,12 +151,14 @@ const Kamar = props => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    borderWidth: 1,
+                    borderColor: GrayBold,
                   }}>
                   <Text style={{fontSize: adjust(9), color: 'black'}}>
-                    Adult {HotelStore.adult} , Childern {HotelStore.children} ,
-                    Room {HotelStore.room}
+                    Adult {searchField.adult} , Childern {searchField.children}{' '}
+                    , Baby {searchField.baby}
                   </Text>
-                </View>
+                </TouchableOpacity>
               )}
               ContentCustoms={({close}) => (
                 <View
@@ -146,9 +205,9 @@ const Kamar = props => {
                           onPress={() => {
                             dispatch({
                               type: 'setPerson',
-                              adult: HotelStore.adult - 1,
-                              children: HotelStore.children,
-                              room: HotelStore.room,
+                              adult: searchField.adult - 1,
+                              children: searchField.children,
+                              baby: searchField.baby,
                             });
                           }}>
                           <Icon
@@ -163,15 +222,15 @@ const Kamar = props => {
                             width: WidthScreen * 0.1,
                             textAlign: 'center',
                           }}>
-                          {HotelStore.adult}
+                          {searchField.adult}
                         </Text>
                         <TouchableOpacity
                           onPress={() => {
                             dispatch({
                               type: 'setPerson',
-                              adult: HotelStore.adult + 1,
-                              children: HotelStore.children,
-                              room: HotelStore.room,
+                              adult: searchField.adult + 1,
+                              children: searchField.children,
+                              baby: searchField.baby,
                             });
                           }}>
                           <Icon
@@ -207,9 +266,9 @@ const Kamar = props => {
                           onPress={() => {
                             dispatch({
                               type: 'setPerson',
-                              adult: HotelStore.adult,
-                              children: HotelStore.children - 1,
-                              room: HotelStore.room,
+                              adult: searchField.adult,
+                              children: searchField.children - 1,
+                              baby: searchField.baby,
                             });
                           }}>
                           <Icon
@@ -224,15 +283,15 @@ const Kamar = props => {
                             width: WidthScreen * 0.1,
                             textAlign: 'center',
                           }}>
-                          {HotelStore.children}
+                          {searchField.children}
                         </Text>
                         <TouchableOpacity
                           onPress={() => {
                             dispatch({
                               type: 'setPerson',
-                              adult: HotelStore.adult,
-                              children: HotelStore.children + 1,
-                              room: HotelStore.room,
+                              adult: searchField.adult,
+                              children: searchField.children + 1,
+                              baby: searchField.baby,
                             });
                           }}>
                           <Icon
@@ -257,7 +316,7 @@ const Kamar = props => {
                         paddingHorizontal: 10,
                         marginTop: 10,
                       }}>
-                      <Text>Room</Text>
+                      <Text>Baby</Text>
                       <View
                         style={{
                           display: 'flex',
@@ -268,9 +327,9 @@ const Kamar = props => {
                           onPress={() => {
                             dispatch({
                               type: 'setPerson',
-                              adult: HotelStore.adult,
-                              children: HotelStore.children,
-                              room: HotelStore.room - 1,
+                              adult: searchField.adult,
+                              children: searchField.children,
+                              baby: searchField.baby - 1,
                             });
                           }}>
                           <Icon
@@ -285,15 +344,15 @@ const Kamar = props => {
                             width: WidthScreen * 0.1,
                             textAlign: 'center',
                           }}>
-                          {HotelStore.room}
+                          {searchField.baby}
                         </Text>
                         <TouchableOpacity
                           onPress={() => {
                             dispatch({
                               type: 'setPerson',
-                              adult: HotelStore.adult,
-                              children: HotelStore.children,
-                              room: HotelStore.room + 1,
+                              adult: searchField.adult,
+                              children: searchField.children,
+                              baby: searchField.baby + 1,
                             });
                           }}>
                           <Icon
@@ -331,12 +390,38 @@ const Kamar = props => {
                 width: '100%',
                 height: '100%',
                 alignItems: 'center',
-                backgroundColor: 'rgba(52, 52, 52, 0.5)',
               }}
               isTransparent={true}
             />
           </View>
           <TouchableOpacity
+            onPress={() => {
+              setOnLoading(true);
+              getRoomAvaliable(
+                {
+                  checkin: moment(searchField.startDate).format('DD MMM YYYY'),
+                  checkout: moment(searchField.endDate).format('DD MMM YYYY'),
+                  slug,
+                  adult: searchField.adult,
+                  children: searchField.children,
+                  total_night: searchField.total_night,
+                },
+                val => {
+                  setRooms([...val.data.data]);
+                  setOnLoading(false);
+                },
+              );
+              dispatch({
+                type: 'selectedRoom',
+                data: {
+                  id: '',
+                  code: '',
+                  floor: '',
+                  room_type: '',
+                },
+                descriptionKamar: '',
+              });
+            }}
             style={{
               flex: 1,
               backgroundColor: 'green',
@@ -346,13 +431,24 @@ const Kamar = props => {
               paddingVertical: 10,
               borderRadius: 5,
             }}>
-            <Text style={{color: 'white', fontSize: adjust(10)}}>
-              Check Ketersediaan Kamar
-            </Text>
+            {loading ? (
+              <ActivityIndicator color={'white'} />
+            ) : (
+              <Text style={{color: 'white', fontSize: adjust(10)}}>
+                Check Ketersediaan Kamar
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
-      <TabelPesananRoomHotel />
+      {hotelStore.HotelReducers.selectedRoom.descriptionKamar === '' ? null : (
+        <TabelPesananRoomHotel
+          navigation={navigation}
+          hotel={hotel}
+          description={hotelStore.HotelReducers.selectedRoom.descriptionKamar}
+          searchField={searchField}
+        />
+      )}
     </View>
   );
 };

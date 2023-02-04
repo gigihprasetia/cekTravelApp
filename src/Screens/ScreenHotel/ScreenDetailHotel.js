@@ -19,9 +19,18 @@ import Kamar from '../../../assets/Component/Kamar';
 import Fasilitas from '../../../assets/Component/Fasilitas';
 import Lokasi from '../../../assets/Component/Lokasi';
 import LoadingPage from '../../../assets/Component/LoadingPage';
+import {useDispatch, useSelector} from 'react-redux';
+import {getRoomAvaliable} from '../../../assets/API/funtionPost';
+import moment from 'moment';
 
 export default function ScreenDetailHotel(props) {
+  const searchField = useSelector(state => state.HotelReducers.hotelRules);
+  const dispatch = useDispatch();
   const [dataHotel, setDataHotel] = useState(null);
+  const [dataRoomAvaliable, setDataRoomAvaliable] = useState({
+    status: false,
+    data: [],
+  });
   const [showIndex, setShowIndex] = useState(0);
   const [showMenu, setShowMenu] = useState('Umum');
   const {
@@ -29,9 +38,36 @@ export default function ScreenDetailHotel(props) {
       params: {slug},
     },
   } = props;
+  const {navigation} = props;
 
   useEffect(() => {
+    dispatch({
+      type: 'selectedRoom',
+      data: {
+        id: '',
+        code: '',
+        floor: '',
+        room_type: '',
+      },
+      descriptionKamar: '',
+    });
     getDetailHotel(slug, res => setDataHotel(res.data.data));
+    getRoomAvaliable(
+      {
+        checkin: moment(searchField.startDate).format('DD MMM YYYY'),
+        checkout: moment(searchField.endDate).format('DD MMM YYYY'),
+        slug,
+        adult: searchField.adult,
+        children: searchField.children,
+        total_night: searchField.total_night,
+      },
+      room => {
+        setDataRoomAvaliable({
+          status: true,
+          data: room.data.data,
+        });
+      },
+    );
   }, []);
 
   return dataHotel === null ? (
@@ -136,7 +172,14 @@ export default function ScreenDetailHotel(props) {
           {showMenu === 'Fasilitas' && (
             <Fasilitas fasilitas={dataHotel.facilities} />
           )}
-          {showMenu === 'Kamar' && <Kamar />}
+          {showMenu === 'Kamar' && (
+            <Kamar
+              hotel={dataHotel.hotel}
+              slug={slug}
+              room={dataRoomAvaliable}
+              navigation={navigation}
+            />
+          )}
           {showMenu === 'Lokasi' && (
             <Lokasi
               latitude={dataHotel.hotel.latitude}

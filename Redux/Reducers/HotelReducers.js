@@ -1,33 +1,51 @@
 const Tomorow = () => {
   const today = new Date();
   const Tomorrow = new Date();
+  const Tomorrow2 = new Date();
   Tomorrow.setDate(today.getDate() + 1);
-  return Tomorrow;
+  Tomorrow2.setDate(today.getDate() + 2);
+  return {
+    Tomorrow,
+    Tomorrow2,
+  };
 };
+
+const {Tomorrow, Tomorrow2} = Tomorow();
 
 const initialState = {
   hotelRules: {
-    room: 1,
+    location: '',
+    baby: 0,
     adult: 1,
-    children: 1,
-    startDate: new Date(),
-    endDate: Tomorow(),
+    children: 0,
+    startDate: Tomorrow,
+    endDate: Tomorrow2,
+    total_night: 1,
+  },
+  selectedRoom: {
+    id: '',
+    code: '',
+    floor: '',
+    room_type: '',
+    descriptionKamar: '',
   },
 };
 
 const HotelReducers = (state = initialState, actions) => {
+  // console.log(actions);
   if (actions.type === 'setDate') {
-    console.log(1);
+    // console.log(1);
     return {
       ...state,
       hotelRules: {
         ...state.hotelRules,
         startDate: actions.startDate,
         endDate: actions.endDate,
+        total_night: actions.total_night,
       },
     };
   } else if (actions.type === 'setPerson') {
-    console.log(2);
+    // console.log(2);
 
     return {
       ...state,
@@ -35,14 +53,53 @@ const HotelReducers = (state = initialState, actions) => {
         ...state.hotelRules,
         adult: actions.adult < 1 ? 1 : actions.adult > 8 ? 8 : actions.adult,
         children:
-          actions.children < 1
-            ? 1
+          actions.children < 0
+            ? 0
             : actions.children > 8
             ? 8
             : actions.children,
-        room: actions.room < 1 ? 1 : actions.room > 8 ? 8 : actions.room,
+        baby: actions.baby < 0 ? 0 : actions.baby > 8 ? 8 : actions.baby,
       },
     };
+  } else if (actions.type === 'locationHotel') {
+    // console.log(actions.data);
+    return {
+      ...state,
+      hotelRules: {
+        ...state.hotelRules,
+        location: actions.data,
+      },
+    };
+  } else if (actions.type === 'selectedRoom') {
+    return {
+      ...state,
+      selectedRoom: {
+        id: actions.data.id,
+        code: actions.data.code,
+        floor: actions.data.floor,
+        room_type: actions.data.room_type,
+        descriptionKamar: actions.descriptionKamar,
+      },
+    };
+  } else if (actions.type === 'resetState') {
+    return (state = {
+      hotelRules: {
+        location: '',
+        baby: 0,
+        adult: 1,
+        children: 0,
+        startDate: Tomorrow,
+        endDate: Tomorrow2,
+        total_night: 1,
+      },
+      selectedRoom: {
+        id: '',
+        code: '',
+        floor: '',
+        room_type: '',
+        descriptionKamar: '',
+      },
+    });
   } else {
     // console.log(3);
 

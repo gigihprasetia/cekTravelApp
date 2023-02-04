@@ -12,9 +12,6 @@ import moment from 'moment';
 import {DatePickerModal} from 'react-native-paper-dates';
 import ModalComponent from './ModalComponent';
 import Icon from 'react-native-vector-icons/Entypo';
-import {useState} from 'react';
-import {set} from 'immer/dist/internal';
-import {Rect} from 'react-native-svg';
 
 const SearchBar = props => {
   const HotelStore = useSelector(state => state.HotelReducers.hotelRules);
@@ -35,11 +32,14 @@ const SearchBar = props => {
 
   const onConfirm = React.useCallback(
     ({startDate, endDate}) => {
+      const diffTime = endDate.getTime() - startDate.getTime();
+      const diffDay = diffTime / (1000 * 3600 * 24);
       setOpen(false);
       dispatch({
         type: 'setDate',
         startDate,
         endDate,
+        total_night: Math.floor(diffDay),
       });
     },
     [setOpen, HotelStore.startDate, HotelStore.endDate],
@@ -175,8 +175,9 @@ const SearchBar = props => {
             }}>
             <View style={{width: '45%'}}>
               <ModalComponent
-                ButtonCustoms={() => (
-                  <View
+                ButtonCustoms={({open}) => (
+                  <TouchableOpacity
+                    onPress={open}
                     style={{
                       width: '100%',
                       height: 40,
@@ -188,9 +189,9 @@ const SearchBar = props => {
                     }}>
                     <Text style={{fontSize: adjust(9), color: 'black'}}>
                       Adult {HotelStore.adult} , Childern {HotelStore.children}{' '}
-                      , Room {HotelStore.room}
+                      , Baby {HotelStore.baby}
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 )}
                 ContentCustoms={({close}) => (
                   <View
@@ -239,7 +240,7 @@ const SearchBar = props => {
                                 type: 'setPerson',
                                 adult: HotelStore.adult - 1,
                                 children: HotelStore.children,
-                                room: HotelStore.room,
+                                baby: HotelStore.baby,
                               });
                             }}>
                             <Icon
@@ -262,7 +263,7 @@ const SearchBar = props => {
                                 type: 'setPerson',
                                 adult: HotelStore.adult + 1,
                                 children: HotelStore.children,
-                                room: HotelStore.room,
+                                baby: HotelStore.baby,
                               });
                             }}>
                             <Icon
@@ -300,7 +301,7 @@ const SearchBar = props => {
                                 type: 'setPerson',
                                 adult: HotelStore.adult,
                                 children: HotelStore.children - 1,
-                                room: HotelStore.room,
+                                baby: HotelStore.baby,
                               });
                             }}>
                             <Icon
@@ -323,7 +324,7 @@ const SearchBar = props => {
                                 type: 'setPerson',
                                 adult: HotelStore.adult,
                                 children: HotelStore.children + 1,
-                                room: HotelStore.room,
+                                baby: HotelStore.baby,
                               });
                             }}>
                             <Icon
@@ -348,7 +349,7 @@ const SearchBar = props => {
                           paddingHorizontal: 10,
                           marginTop: 10,
                         }}>
-                        <Text>Room</Text>
+                        <Text>Baby</Text>
                         <View
                           style={{
                             display: 'flex',
@@ -361,7 +362,7 @@ const SearchBar = props => {
                                 type: 'setPerson',
                                 adult: HotelStore.adult,
                                 children: HotelStore.children,
-                                room: HotelStore.room - 1,
+                                baby: HotelStore.baby - 1,
                               });
                             }}>
                             <Icon
@@ -376,7 +377,7 @@ const SearchBar = props => {
                               width: WidthScreen * 0.1,
                               textAlign: 'center',
                             }}>
-                            {HotelStore.room}
+                            {HotelStore.baby}
                           </Text>
                           <TouchableOpacity
                             onPress={() => {
@@ -384,7 +385,7 @@ const SearchBar = props => {
                                 type: 'setPerson',
                                 adult: HotelStore.adult,
                                 children: HotelStore.children,
-                                room: HotelStore.room + 1,
+                                baby: HotelStore.baby + 1,
                               });
                             }}>
                             <Icon
@@ -428,7 +429,13 @@ const SearchBar = props => {
               />
             </View>
             <TouchableOpacity
-              onPress={() => navigation.push('FilterHotel')}
+              onPress={() => {
+                dispatch({
+                  type: 'locationHotel',
+                  data: inputval,
+                });
+                navigation.push('FilterHotel');
+              }}
               style={{
                 width: '45%',
                 height: HeightScreen * 0.055,

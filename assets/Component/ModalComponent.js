@@ -26,12 +26,30 @@ const ModalComponent = ({
           setModalVisible(!modalVisible);
         }}>
         <View style={ContainerStyleContent}>
-          <ContentCustoms close={() => setModalVisible(!modalVisible)} />
+          <ContentCustoms
+            close={callback => {
+              setModalVisible(!modalVisible);
+              if (callback && typeof callback === 'function') {
+                callback();
+              } else {
+                null;
+              }
+            }}
+          />
         </View>
       </Modal>
-      <Pressable onPress={() => setModalVisible(true)}>
-        <ButtonCustoms />
-      </Pressable>
+      {/* <Pressable onPress={() => setModalVisible(true)}> */}
+      <ButtonCustoms
+        open={callback => {
+          setModalVisible(true);
+          if (callback && typeof callback === 'function') {
+            callback();
+          } else {
+            null;
+          }
+        }}
+      />
+      {/* </Pressable> */}
     </View>
   );
 };

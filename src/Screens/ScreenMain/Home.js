@@ -21,9 +21,19 @@ import HeadersCom from '../../../assets/Component/HeadersCom';
 import Material from 'react-native-vector-icons/MaterialCommunityIcons';
 import ModalComponent from '../../../assets/Component/ModalComponent';
 import {orange100} from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
-
+import {useDispatch, useSelector} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
 const Home = props => {
+  const state = useSelector(states => states);
+  const isFocused = useIsFocused();
   const {navigation} = props;
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch({type: 'resetState'});
+    console.log('terhapus');
+  }, [isFocused]);
+
+  // console.log(state);
 
   return (
     <SafeAreaView
@@ -51,13 +61,15 @@ const Home = props => {
             borderColor: Oranges,
           }}>
           <ModalComponent
-            ButtonCustoms={() => (
-              <View style={{alignItems: 'center', display: 'flex'}}>
+            ButtonCustoms={({open}) => (
+              <TouchableOpacity
+                onPress={open}
+                style={{alignItems: 'center', display: 'flex'}}>
                 <Material name="airplane" size={25} color={Oranges} />
                 <Text style={{fontSize: adjust(8), color: Oranges}}>
                   Pesawat
                 </Text>
-              </View>
+              </TouchableOpacity>
             )}
             ContentCustoms={({close}) => (
               <View
@@ -114,11 +126,13 @@ const Home = props => {
             <Text style={{fontSize: adjust(8), color: Oranges}}>Hotel</Text>
           </TouchableOpacity>
           <ModalComponent
-            ButtonCustoms={() => (
-              <View style={{alignItems: 'center', display: 'flex'}}>
+            ButtonCustoms={({open}) => (
+              <TouchableOpacity
+                onPress={open}
+                style={{alignItems: 'center', display: 'flex'}}>
                 <Material name="train" size={25} color={Oranges} />
                 <Text style={{fontSize: adjust(8), color: Oranges}}>Train</Text>
-              </View>
+              </TouchableOpacity>
             )}
             ContentCustoms={({close}) => (
               <View
@@ -167,11 +181,13 @@ const Home = props => {
             isTransparent={true}
           />
           <ModalComponent
-            ButtonCustoms={() => (
-              <View style={{alignItems: 'center', display: 'flex'}}>
+            ButtonCustoms={({open}) => (
+              <TouchableOpacity
+                onPress={open}
+                style={{alignItems: 'center', display: 'flex'}}>
                 <Material name="bus" size={25} color={Oranges} />
                 <Text style={{fontSize: adjust(8), color: Oranges}}>Bus</Text>
-              </View>
+              </TouchableOpacity>
             )}
             ContentCustoms={({close}) => (
               <View

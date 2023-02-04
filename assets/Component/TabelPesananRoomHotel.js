@@ -1,6 +1,7 @@
-import {View, Text} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import adjust, {
+  formatter,
   GrayBold,
   GrayFade,
   HeightScreen,
@@ -10,15 +11,23 @@ import adjust, {
 import {Button, Checkbox} from 'react-native-paper';
 import ModalComponent from './ModalComponent';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import moment from 'moment';
 
-const TabelPesananRoomHotel = ({price = '4000000', rate = 5}) => {
+const TabelPesananRoomHotel = ({
+  description,
+  hotel,
+  searchField,
+  navigation,
+}) => {
+  // console.log(description, hotel);
+  // console.log(searchField);
   return (
     <View
       style={{
         flex: 1,
         borderWidth: 1,
         borderRadius: 10,
-        borderColor: GrayFade,
+        borderColor: GrayBold,
         margOutVertical: 15,
         padding: 10,
         marginVertical: 15,
@@ -33,17 +42,17 @@ const TabelPesananRoomHotel = ({price = '4000000', rate = 5}) => {
             alignItems: 'center',
           }}>
           <View>
-            <Text>{price}</Text>
+            <Text>{formatter(description.price)}</Text>
             <Text>Permalam</Text>
           </View>
-          <Text>{rate}</Text>
+          <Text>{hotel.rate}</Text>
         </View>
         {/* CARD CHECKIN AND CHECKOUT */}
         <View
           style={{
             flex: 1,
             borderWidth: 1,
-            borderColor: GrayFade,
+            borderColor: GrayBold,
             marginTop: 10,
           }}>
           <View
@@ -53,36 +62,54 @@ const TabelPesananRoomHotel = ({price = '4000000', rate = 5}) => {
               flexDirection: 'row',
               padding: 5,
               borderBottomWidth: 1,
-              borderBottomColor: GrayFade,
+              borderBottomColor: GrayBold,
             }}>
             <View style={{flex: 1, alignItems: 'center'}}>
-              <Text style={{color: GrayFade, fontSize: adjust(10)}}>
+              <Text style={{color: GrayBold, fontSize: adjust(10)}}>
                 CheckIn
               </Text>
-              <Text style={{color: GrayFade, fontSize: adjust(10)}}>
-                CheckIn
+              <Text style={{color: GrayBold, fontSize: adjust(10)}}>
+                {moment(searchField.startDate).format('DD MMM YYYY')}
               </Text>
             </View>
             <View
               style={{
                 flex: 1,
                 borderLeftWidth: 1,
-                borderLeftColor: GrayFade,
+                borderLeftColor: GrayBold,
                 alignItems: 'center',
               }}>
-              <Text style={{color: GrayFade, fontSize: adjust(10)}}>
+              <Text style={{color: GrayBold, fontSize: adjust(10)}}>
                 CheckOut
               </Text>
-              <Text style={{color: GrayFade, fontSize: adjust(10)}}>
-                CheckOut
+              <Text style={{color: GrayBold, fontSize: adjust(10)}}>
+                {moment(searchField.endDate).format('DD MMM YYYY')}
               </Text>
             </View>
           </View>
           <View style={{padding: 5}}>
             <Text>Tamu</Text>
-            <Text>1 Orang</Text>
+            <Text> {searchField.adult + searchField.children}</Text>
           </View>
         </View>
+
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginVertical: 10,
+          }}>
+          <Text style={{fontSize: adjust(10), color: GrayBold}}>
+            {' '}
+            {formatter(description.price)} X {searchField.total_night} Malam
+          </Text>
+          <Text style={{fontSize: adjust(11), color: Oranges}}>
+            {' '}
+            {formatter(parseInt(description.price) * searchField.total_night)}
+          </Text>
+        </View>
+
         {/* ADDONS */}
         <View
           style={{
@@ -95,14 +122,16 @@ const TabelPesananRoomHotel = ({price = '4000000', rate = 5}) => {
           <Text style={{color: GrayBold, fontSize: adjust(11)}}>
             Perlu fasilitas tambahan?
           </Text>
-          <Text style={{color: GrayFade, fontSize: adjust(10)}}>
+          <Text style={{color: GrayBold, fontSize: adjust(10)}}>
             Antar Jemput | Tour Guide | Makanan
           </Text>
           <ModalComponent
-            ButtonCustoms={() => (
-              <Text style={{color: Oranges, fontSize: adjust(10)}}>
-                Tambah Addons
-              </Text>
+            ButtonCustoms={({open}) => (
+              <TouchableOpacity onPress={open}>
+                <Text style={{color: Oranges, fontSize: adjust(10)}}>
+                  Tambah Addons
+                </Text>
+              </TouchableOpacity>
             )}
             ContainerStyleContent={{
               flex: 1,
@@ -130,7 +159,7 @@ const TabelPesananRoomHotel = ({price = '4000000', rate = 5}) => {
                   <View
                     style={{
                       borderBottomWidth: 1,
-                      borderBottomColor: GrayFade,
+                      borderBottomColor: GrayBold,
                       marginVertical: 10,
                     }}>
                     <View
@@ -178,7 +207,7 @@ const TabelPesananRoomHotel = ({price = '4000000', rate = 5}) => {
                         </Text>
                         <Text
                           style={{
-                            color: GrayFade,
+                            color: GrayBold,
                             fontSize: adjust(10),
                           }}>
                           Rp 56.000 / orang
@@ -189,7 +218,7 @@ const TabelPesananRoomHotel = ({price = '4000000', rate = 5}) => {
                   <View
                     style={{
                       borderBottomWidth: 1,
-                      borderBottomColor: GrayFade,
+                      borderBottomColor: GrayBold,
                       marginVertical: 10,
                     }}>
                     <View
@@ -237,7 +266,7 @@ const TabelPesananRoomHotel = ({price = '4000000', rate = 5}) => {
                         </Text>
                         <Text
                           style={{
-                            color: GrayFade,
+                            color: GrayBold,
                             fontSize: adjust(10),
                           }}>
                           Rp 150.000 / orang
@@ -261,7 +290,7 @@ const TabelPesananRoomHotel = ({price = '4000000', rate = 5}) => {
                         </Text>
                         <Text
                           style={{
-                            color: GrayFade,
+                            color: GrayBold,
                             fontSize: adjust(10),
                           }}>
                           Rp 250.000 / orang
@@ -272,7 +301,7 @@ const TabelPesananRoomHotel = ({price = '4000000', rate = 5}) => {
                   <View
                     style={{
                       borderBottomWidth: 1,
-                      borderBottomColor: GrayFade,
+                      borderBottomColor: GrayBold,
                       marginVertical: 10,
                     }}>
                     <View
@@ -320,7 +349,7 @@ const TabelPesananRoomHotel = ({price = '4000000', rate = 5}) => {
                         </Text>
                         <Text
                           style={{
-                            color: GrayFade,
+                            color: GrayBold,
                             fontSize: adjust(10),
                           }}>
                           Rp 250.000 / orang
@@ -355,7 +384,15 @@ const TabelPesananRoomHotel = ({price = '4000000', rate = 5}) => {
           />
         </View>
 
-        <Button buttonColor={Oranges} style={{marginTop: 10}}>
+        <Button
+          buttonColor={Oranges}
+          style={{marginTop: 10}}
+          onPress={() => {
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'FormPaymentHotel'}],
+            });
+          }}>
           <Text style={{color: 'white', fontSize: adjust(10)}}>
             Pesan Sekarang
           </Text>

@@ -6,6 +6,8 @@ import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ScreenDashboardHotel from './ScreenDashboardHotel';
 import ScreenDetailHotel from './ScreenDetailHotel';
 import ScreenFilterHotel from './ScreenFilterHotel';
+import ScreenFormPayment from './ScreenFormPayment';
+import ScreenProcess from './ScreenProcess';
 
 const StackHotel = () => {
   return (
@@ -42,6 +44,8 @@ const StackHotel = () => {
       <Stack.Screen name="Dashboard Hotel" component={ScreenDashboardHotel} />
       <Stack.Screen name="FilterHotel" component={ScreenFilterHotel} />
       <Stack.Screen name="DetailHotel" component={ScreenDetailHotel} />
+      <Stack.Screen name="FormPaymentHotel" component={ScreenFormPayment} />
+      <Stack.Screen name="Process" component={ScreenProcess} />
     </Stack.Navigator>
   );
 };

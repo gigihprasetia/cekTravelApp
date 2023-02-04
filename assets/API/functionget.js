@@ -16,3 +16,8 @@ export const getDetailHotel = async (slug, callback) => {
     .then(val => callback(val))
     .catch(err => console.log(err));
 };
+export const paymentInquirySucsess = async (booking_code, callback) => {
+  await APIV2.get(`/payment/inquiry`, {params: {booking_code}})
+    .then(val => callback(val))
+    .catch(err => console.log(err));
+};
