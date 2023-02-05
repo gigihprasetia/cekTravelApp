@@ -185,10 +185,23 @@ const ScreenFormPayment = props => {
       <ScrollView>
         {/* RangkumanPemesanan */}
         <View>
-          <Text
-            style={{color: Oranges, fontSize: adjust(13), fontWeight: 'bold'}}>
-            Rangkuman Pemesanan
-          </Text>
+          <View
+            style={{
+              borderBottomWidth: 1,
+              borderColor: GrayBold,
+              paddingBottom: 5,
+              marginBottom: 5,
+              borderBottomColor: Oranges,
+            }}>
+            <Text
+              style={{
+                color: Oranges,
+                fontSize: adjust(13),
+                fontWeight: 'bold',
+              }}>
+              Rangkuman Pemesanan
+            </Text>
+          </View>
           <View
             style={{
               marginVertical: 5,
@@ -332,10 +345,23 @@ const ScreenFormPayment = props => {
         )}
         {/* IdentitasPemesan */}
         <View style={{marginVertical: 10}}>
-          <Text
-            style={{color: Oranges, fontSize: adjust(13), fontWeight: 'bold'}}>
-            Identitas Pemesan
-          </Text>
+          <View
+            style={{
+              borderBottomWidth: 1,
+              borderColor: GrayBold,
+              paddingBottom: 5,
+              marginBottom: 10,
+              borderBottomColor: Oranges,
+            }}>
+            <Text
+              style={{
+                color: Oranges,
+                fontSize: adjust(13),
+                fontWeight: 'bold',
+              }}>
+              Identitas Pemesan
+            </Text>
+          </View>
           <View style={{flex: 1, flexDirection: 'row'}}>
             <View style={{width: WidthScreen * 0.5}}>
               <Text style={{color: GrayBold, fontSize: adjust(10)}}>Title</Text>

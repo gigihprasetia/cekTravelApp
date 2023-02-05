@@ -12,7 +12,12 @@ import React from 'react';
 import {useEffect} from 'react';
 import {getDetailHotel} from '../../../assets/API/functionget';
 import {useState} from 'react';
-import adjust, {GrayFade, HeightScreen, Oranges} from '../../../assets/utils';
+import adjust, {
+  GrayBold,
+  GrayFade,
+  HeightScreen,
+  Oranges,
+} from '../../../assets/utils';
 import Icon from 'react-native-vector-icons/Entypo';
 import Umum from '../../../assets/Component/Umum';
 import Kamar from '../../../assets/Component/Kamar';
@@ -148,13 +153,13 @@ export default function ScreenDetailHotel(props) {
                 style={{
                   flex: 1,
                   justifyContent: 'center',
-                  borderBottomWidth: 2,
+                  borderBottomWidth: 1,
                   borderBottomColor: showMenu === val ? Oranges : GrayFade,
                 }}>
                 <Text
                   style={{
-                    fontSize: adjust(11),
-                    color: showMenu === val ? Oranges : GrayFade,
+                    fontSize: adjust(10),
+                    color: showMenu === val ? Oranges : GrayBold,
                   }}>
                   {val}
                 </Text>

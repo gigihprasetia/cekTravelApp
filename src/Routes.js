@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Text, View} from 'react-native';
+import {Text, View, SafeAreaView, Image} from 'react-native';
 import {StackActions} from '@react-navigation/native';
 import DashboardMain from './Screens/DashboardMain';
 import StackHotel from './Screens/ScreenHotel/StackHotel';
@@ -18,14 +18,19 @@ const SplashScreen = props => {
   }, []);
 
   return (
-    <View
+    <SafeAreaView
       style={{
-        display: 'flex',
+        flex: 1,
+        height: '100%',
         justifyContent: 'center',
-        alignContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white',
       }}>
-      <Text>splashScreen</Text>
-    </View>
+      <Image
+        style={{width: 100, height: 100, resizeMode: 'contain'}}
+        source={require('../assets/Images/cektravel.png')}
+      />
+    </SafeAreaView>
   );
 };
 

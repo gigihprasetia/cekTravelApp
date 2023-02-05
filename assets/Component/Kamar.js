@@ -63,7 +63,13 @@ const Kamar = props => {
     <View style={{flex: 1}}>
       <View>
         <View style={{borderBottomWidth: 1, borderBottomColor: Oranges}}>
-          <Text style={{fontSize: adjust(12), color: Oranges, marginBottom: 5}}>
+          <Text
+            style={{
+              fontSize: adjust(12),
+              color: Oranges,
+              marginBottom: 5,
+              fontWeight: 'bold',
+            }}>
             Kamar Yang Tersedia
           </Text>
         </View>

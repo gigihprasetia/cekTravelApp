@@ -18,6 +18,7 @@ const Lokasi = ({latitude, longitude, shortDestination, address}) => {
           marginHorizontal: 10,
           fontSize: adjust(12),
           color: GrayBold,
+          fontWeight: 'bold',
         }}>
         Destinasi Terdekat
       </Text>
