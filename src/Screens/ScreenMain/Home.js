@@ -24,13 +24,12 @@ import {orange100} from 'react-native-paper/lib/typescript/styles/themes/v2/colo
 import {useDispatch, useSelector} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
 const Home = props => {
-  const state = useSelector(states => states);
   const isFocused = useIsFocused();
   const {navigation} = props;
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch({type: 'resetState'});
-    console.log('terhapus');
+    // console.log('terhapus');
   }, [isFocused]);
 
   // console.log(state);

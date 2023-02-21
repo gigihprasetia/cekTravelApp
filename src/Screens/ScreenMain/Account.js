@@ -6,120 +6,129 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  ScrollView,
+  Button,
 } from 'react-native';
-import React from 'react';
-import {HeightScreen, Oranges, WidthScreen} from '../../../assets/utils';
+import React, {useState} from 'react';
+import adjust, {
+  GrayFade,
+  Greens,
+  HeightScreen,
+  Oranges,
+  WidthScreen,
+} from '../../../assets/utils';
+import LoginScreen from '../../../assets/Component/LoginScreen';
+import RegisterScreen from '../../../assets/Component/RegisterScreen';
+import {useDispatch, useSelector} from 'react-redux';
+import {SvgUri} from 'react-native-svg';
+import {Revoke} from '../../../assets/API/functionget';
 
-export default function Account() {
-  return (
-    <SafeAreaView>
-      <View style={Style.view}>
-        <Image
-          style={{width: WidthScreen * 0.161, height: HeightScreen * 0.1}}
-          source={require('../../../assets/Images/cektravel.png')}
+export default function Account(props) {
+  const isLogin = useSelector(state => state.UserReducers);
+  const dispatch = useDispatch();
+  console.log(isLogin);
+  const [toogle, setToogle] = useState(true);
+  const {navigation} = props;
+  return isLogin.dataUser.statusUser ? (
+    <View style={{backgroundColor: 'white', width: '100%', height: '100%'}}>
+      <View
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          marginVertical: adjust(10),
+        }}>
+        <View>
+          <SvgUri
+            width={adjust(35)}
+            height={adjust(35)}
+            uri={isLogin.dataUser.data.ava}
+          />
+        </View>
+
+        <Text style={{color: Oranges, fontSize: adjust(15)}}>
+          {isLogin.dataUser.data.name}
+        </Text>
+        <Text
+          style={{
+            color: GrayFade,
+            fontSize: adjust(10),
+            marginBottom: adjust(10),
+          }}>
+          {isLogin.dataUser.data.email}
+        </Text>
+        <Button
+          onPress={() => {
+            Revoke(isLogin.isAuthenticated.token, val =>
+              dispatch({
+                type: 'revoke',
+              }),
+            );
+          }}
+          title="Logout"
+          color={'red'}
         />
-        <>
-          <View style={Style.containInput}>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'baseline',
-              }}>
-              <Text name={'email'} style={Style.label}>
-                Email
-              </Text>
-            </View>
-            <TextInput
-              name={'password'}
-              style={Style.input}
-              placeholder="yourname@gmail.com"
-            />
-          </View>
-
-          <View style={Style.containInput}>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'baseline',
-              }}>
-              <Text style={Style.label}>Password</Text>
-            </View>
-            <TextInput
-              name={'password'}
-              style={Style.input}
-              placeholder="*******"
-              secureTextEntry={true}
-            />
-          </View>
-
-          <TouchableOpacity style={{marginTop: 15, width: '90%'}}>
-            <View style={Style.btn}>
-              <Text style={{color: 'white'}}>Login</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              marginTop: 25,
-              width: '90%',
-              display: 'flex',
-              alignItems: 'center',
-              borderWidth: 1,
-              height: 40,
-              justifyContent: 'center',
-              borderRadius: 20,
-              borderColor: Oranges,
-            }}>
-            <Text style={{color: Oranges}}>Login With Google</Text>
-          </TouchableOpacity>
-        </>
       </View>
+    </View>
+  ) : (
+    <SafeAreaView
+      style={{
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'white',
+        padding: adjust(5),
+      }}>
+      <ScrollView>
+        <View
+          style={{
+            flex: 1,
+            height: '100%',
+            flexDirection: 'row',
+            marginBottom: adjust(15),
+          }}>
+          <TouchableOpacity
+            onPress={() => setToogle(true)}
+            style={{
+              flex: 1,
+              paddingVertical: adjust(10),
+              alignItems: 'center',
+              borderBottomWidth: toogle ? 1 : 0,
+              borderBottomColor: toogle ? Oranges : GrayFade,
+            }}>
+            <Text
+              style={{
+                color: toogle ? Oranges : GrayFade,
+                fontSize: adjust(10),
+                fontWeight: 'bold',
+              }}>
+              Login
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setToogle(false)}
+            style={{
+              flex: 1,
+              paddingVertical: adjust(10),
+              alignItems: 'center',
+              borderBottomWidth: !toogle ? 1 : 0,
+              borderBottomColor: !toogle ? Oranges : GrayFade,
+            }}>
+            <Text
+              style={{
+                color: !toogle ? Oranges : GrayFade,
+                fontSize: adjust(10),
+                fontWeight: 'bold',
+              }}>
+              Register
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {toogle ? (
+          <LoginScreen navigation={navigation} />
+        ) : (
+          <RegisterScreen navigation={navigation} setToogle={setToogle} />
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
-
-const Style = StyleSheet.create({
-  view: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-  },
-  view2: {
-    width: 300,
-    height: 400,
-    backgroundColor: 'red',
-  },
-  input: {
-    paddingLeft: 20,
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: Oranges,
-    color: 'black',
-  },
-
-  label: {
-    paddingLeft: 3,
-    marginBottom: 5,
-    color: Oranges,
-  },
-  containInput: {
-    width: '90%',
-    marginTop: 20,
-  },
-  btn: {
-    height: 40,
-    borderRadius: 20,
-    width: '100%',
-    backgroundColor: Oranges,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});

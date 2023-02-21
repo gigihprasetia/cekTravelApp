@@ -6435,6 +6435,11 @@
     "prop-types" "^15.6.1"
     "react" ">=16.0.0-alpha.12"
 
+"react-native-device-info@^10.3.0":
+  "integrity" "sha512-/ziZN1sA1REbJTv5mQZ4tXggcTvSbct+u5kCaze8BmN//lbxcTvWsU6NQd4IihLt89VkbX+14IGc9sVApSxd/w=="
+  "resolved" "https://registry.npmjs.org/react-native-device-info/-/react-native-device-info-10.3.0.tgz"
+  "version" "10.3.0"
+
 "react-native-dotenv@^3.4.7":
   "integrity" "sha512-GqUDdmrtKw7qYS9jjQLipEPctMd0YuSBNVZBNlaHtaHMJ63iaB4FABO4uX0iSUJpgMwozZki4fRv4dDHmVUoLg=="
   "resolved" "https://registry.npmjs.org/react-native-dotenv/-/react-native-dotenv-3.4.7.tgz"
@@ -6527,10 +6532,10 @@
   "resolved" "https://registry.npmjs.org/react-native-select-dropdown/-/react-native-select-dropdown-3.2.1.tgz"
   "version" "3.2.1"
 
-"react-native-svg@^13.7.0":
-  "integrity" "sha512-WR5CIURvee5cAfvMhmdoeOjh1SC8KdLq5u5eFsz4pbYzCtIFClGSkLnNgkMSDMVV5LV0qQa4jeIk75ieIBzaDA=="
-  "resolved" "https://registry.npmjs.org/react-native-svg/-/react-native-svg-13.7.0.tgz"
-  "version" "13.7.0"
+"react-native-svg@^13.8.0":
+  "integrity" "sha512-G8Mx6W86da+vFimZBJvA93POw8yz0fgDS5biy6oIjMWVJVQSDzCyzwO/zY0yuZmCDhKSZzogl5m0wXXvW2OcTA=="
+  "resolved" "https://registry.npmjs.org/react-native-svg/-/react-native-svg-13.8.0.tgz"
+  "version" "13.8.0"
   dependencies:
     "css-select" "^5.1.0"
     "css-tree" "^1.1.3"

@@ -23,13 +23,18 @@ import SearchBar from '../../../assets/Component/SearchBar';
 import {useState} from 'react';
 import CardHotel from '../../../assets/Component/cardHotel';
 import LoadingPage from '../../../assets/Component/LoadingPage';
+import {useSelector} from 'react-redux';
 
 export default function ScreenDashboardHotel(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [dataHotel, setDatahotel] = useState([]);
   const {navigation} = props;
+  const isToken = useSelector(
+    state => state.UserReducers.isAuthenticated.token,
+  );
+
   useEffect(() => {
-    getHotel(res => {
+    getHotel(isToken, res => {
       setIsLoading(false);
       setDatahotel(res);
     });

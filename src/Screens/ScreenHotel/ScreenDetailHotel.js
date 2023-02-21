@@ -26,6 +26,7 @@ import Lokasi from '../../../assets/Component/Lokasi';
 import LoadingPage from '../../../assets/Component/LoadingPage';
 import {useDispatch, useSelector} from 'react-redux';
 import {getRoomAvaliable} from '../../../assets/API/funtionPost';
+
 import moment from 'moment';
 
 export default function ScreenDetailHotel(props) {
@@ -44,6 +45,9 @@ export default function ScreenDetailHotel(props) {
     },
   } = props;
   const {navigation} = props;
+  const isToken = useSelector(
+    state => state.UserReducers.isAuthenticated.token,
+  );
 
   useEffect(() => {
     dispatch({
@@ -56,8 +60,9 @@ export default function ScreenDetailHotel(props) {
       },
       descriptionKamar: '',
     });
-    getDetailHotel(slug, res => setDataHotel(res.data.data));
+    getDetailHotel(isToken, slug, res => setDataHotel(res.data.data));
     getRoomAvaliable(
+      isToken,
       {
         checkin: moment(searchField.startDate).format('DD MMM YYYY'),
         checkout: moment(searchField.endDate).format('DD MMM YYYY'),
@@ -179,6 +184,7 @@ export default function ScreenDetailHotel(props) {
           )}
           {showMenu === 'Kamar' && (
             <Kamar
+              isToken={isToken}
               hotel={dataHotel.hotel}
               slug={slug}
               room={dataRoomAvaliable}

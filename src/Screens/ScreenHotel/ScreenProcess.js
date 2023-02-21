@@ -9,6 +9,7 @@ import {
 import React from 'react';
 import {useEffect} from 'react';
 import {paymentInquirySucsess} from '../../../assets/API/functionget';
+import {CommonActions} from '@react-navigation/native';
 import adjust, {
   formatter,
   GrayBold,
@@ -18,6 +19,8 @@ import adjust, {
 } from '../../../assets/utils';
 import {useState} from 'react';
 import RenderHTML from 'react-native-render-html';
+import {TouchableOpacity} from 'react-native';
+import {useSelector} from 'react-redux';
 
 const ScreenProcess = props => {
   const [dataPayment, setDataPayment] = useState({
@@ -27,9 +30,14 @@ const ScreenProcess = props => {
       html: '',
     },
   });
+  const {navigation} = props;
+  const isToken = useSelector(
+    state => state.UserReducers.isAuthenticated.token,
+  );
 
+  // console.log(props);
   useEffect(() => {
-    paymentInquirySucsess(props.route.params, val => {
+    paymentInquirySucsess(isToken, props.route.params, val => {
       // console.log(val.data.data.payment_method.instructions);
       setDataPayment({
         status: true,
@@ -88,6 +96,39 @@ const ScreenProcess = props => {
           </View>
           <RenderHTML contentWidth={WidthScreen} source={dataPayment.source} />
         </View>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [
+                  {
+                    name: 'DashboardMain',
+                    state: {
+                      routes: [{name: 'Pesanan'}],
+                    },
+                  },
+                ],
+              }),
+            );
+          }}
+          style={{
+            backgroundColor: Oranges,
+            flex: 1,
+            alignItems: 'center',
+            padding: adjust(5),
+            marginVertical: adjust(5),
+            borderRadius: adjust(5),
+          }}>
+          <Text
+            style={{
+              fontSize: adjust(10),
+              fontWeight: 'bold',
+              color: 'white',
+            }}>
+            Cek Pembayaran
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   ) : (

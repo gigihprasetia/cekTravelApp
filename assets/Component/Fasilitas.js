@@ -7,7 +7,7 @@ const Fasilitas = ({fasilitas}) => {
   return (
     <View>
       {fasilitas.map((val, index) => {
-        console.log(val.icon.slice(4));
+        // console.log(val.icon.slice(4));
         return (
           <View key={index} style={{flex: 1, flexDirection: 'row'}}>
             <Svg

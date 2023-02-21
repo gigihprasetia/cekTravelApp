@@ -35,9 +35,13 @@ export default function ScreenFilterHotel(props) {
   });
   const {navigation} = props;
   const searchField = useSelector(state => state.HotelReducers.hotelRules);
+  const isToken = useSelector(
+    state => state.UserReducers.isAuthenticated.token,
+  );
 
   useEffect(() => {
     getHotelAvaliable(
+      isToken,
       {
         checkin: moment(searchField.startDate).format('DD MMM YYYY'),
         checkout: moment(searchField.endDate).format('DD MMM YYYY'),

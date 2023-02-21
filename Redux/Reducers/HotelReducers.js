@@ -83,6 +83,7 @@ const HotelReducers = (state = initialState, actions) => {
     };
   } else if (actions.type === 'resetState') {
     return (state = {
+      ...state,
       hotelRules: {
         location: '',
         baby: 0,

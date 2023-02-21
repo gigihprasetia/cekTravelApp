@@ -30,6 +30,11 @@ import {APIV2} from '../../../assets/API';
 import ModalComponent from '../../../assets/Component/ModalComponent';
 const ScreenFormPayment = props => {
   const dataHotel = useSelector(state => state);
+  const dataUser = useSelector(state => state.UserReducers);
+  const isToken = useSelector(
+    state => state.UserReducers.isAuthenticated.token,
+  );
+  // console.log(dataUser.dataUser.data.email);
   const [identitasPemesanInput, setIdentitasPemesanInput] = useState({
     title: {
       value: '',
@@ -52,7 +57,7 @@ const ScreenFormPayment = props => {
       message: '',
     },
     email: {
-      value: '',
+      value: dataUser.dataUser.data.email || '',
       status: false,
       message: '',
     },
@@ -73,7 +78,12 @@ const ScreenFormPayment = props => {
 
   useEffect(() => {
     const getDetailinquiry = async key => {
-      await APIV2.get(`/booking/inquiry-detail`, {params: {key: key}})
+      await APIV2.get(`/booking/inquiry-detail`, {
+        params: {key: key},
+        headers: {
+          Authorization: `Bearer ${isToken}`,
+        },
+      })
         .then(val => {
           // console.log(val,"hahah")
           setDataPemesan({
@@ -85,6 +95,7 @@ const ScreenFormPayment = props => {
     };
 
     inquiryProcess(
+      isToken,
       {
         addons: [],
         adult: dataHotel.HotelReducers.hotelRules.adult,
@@ -97,12 +108,15 @@ const ScreenFormPayment = props => {
         children: dataHotel.HotelReducers.hotelRules.children,
         room_id: dataHotel.HotelReducers.selectedRoom.id,
       },
-      inquir => getDetailinquiry(inquir.data.data.inquiry_key),
+      inquir => {
+        getDetailinquiry(inquir.data.data.inquiry_key);
+        // console.log(inquir);
+      },
     );
   }, []);
 
   const titleTemplate = ['Mr', 'Mrs'];
-  const identitasTemplate = ['KTP'];
+  const identitasTemplate = ['KTP', 'Driving License', 'Passport'];
 
   const validate = text => {
     console.log(text);
@@ -431,6 +445,7 @@ const ScreenFormPayment = props => {
                   marginTop: 5,
                   paddingHorizontal: 10,
                 }}
+                value={identitasPemesanInput.nama.value}
                 keyboardType={'default'}
                 onChangeText={nama =>
                   setIdentitasPemesanInput({
@@ -538,6 +553,7 @@ const ScreenFormPayment = props => {
               </Text>
               <TextInput
                 placeholder="Example@gmail.com"
+                value={identitasPemesanInput.email.value}
                 style={{
                   borderWidth: 1,
                   height: 35,
@@ -697,6 +713,7 @@ const ScreenFormPayment = props => {
                       key={val.code}
                       onPress={() =>
                         processPayment(
+                          isToken,
                           {
                             email: identitasPemesanInput.email.value,
                             id_number:

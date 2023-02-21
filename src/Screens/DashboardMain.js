@@ -1,5 +1,5 @@
 import {View, Text, Button, Dimensions, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Home from './ScreenMain/Home';
@@ -13,9 +13,24 @@ import adjust, {
   WidthScreen,
 } from '../../assets/utils';
 import HeaderTab from '../../assets/Component/HeaderTab';
+import {ValidateIslogin} from '../../assets/API/functionget';
+import {useDispatch, useSelector} from 'react-redux';
 
 const Tab = createBottomTabNavigator();
 export default function DashboardMain() {
+  const {token} = useSelector(state => state.UserReducers.isAuthenticated);
+  const states = useSelector(state => state.UserReducers);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    ValidateIslogin(token, val => {
+      dispatch({
+        type: 'setUserData',
+        data: val.data.data,
+      });
+    });
+  }, [token]);
+
   return (
     <Tab.Navigator
       initialRouteName="Home"

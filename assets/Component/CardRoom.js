@@ -30,6 +30,7 @@ const CardRoom = props => {
   const [loadingLayout, setLoadingLayout] = useState(false);
   const {data} = props;
   const {hotel} = props;
+  const {isToken} = props;
   const searchField = useSelector(state => state.HotelReducers.hotelRules);
   const selectedRoom = useSelector(state => state.HotelReducers.selectedRoom);
   const [onSelectRoom, setOnSelectRoom] = useState({
@@ -85,6 +86,7 @@ const CardRoom = props => {
                     open(() => {
                       setLoadingLayout(true);
                       getRoomLayoutAvaliable(
+                        isToken,
                         {
                           adult: searchField.adult,
                           checkin: moment(searchField.startDate).format(

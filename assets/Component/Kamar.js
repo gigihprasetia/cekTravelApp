@@ -32,6 +32,7 @@ const Kamar = props => {
   const [open, setOpen] = React.useState(false);
   const [rooms, setRooms] = useState([...room.data]);
   const {slug} = props;
+  const {isToken} = props;
   const [loading, setOnLoading] = useState(false);
   const onDismiss = React.useCallback(() => {
     setOpen(false);
@@ -82,7 +83,7 @@ const Kamar = props => {
                   {loading ? (
                     <ActivityIndicator color={Oranges} />
                   ) : (
-                    <CardRoom hotel={hotel} data={val} />
+                    <CardRoom isToken={isToken} hotel={hotel} data={val} />
                   )}
                 </View>
               );
@@ -404,6 +405,7 @@ const Kamar = props => {
             onPress={() => {
               setOnLoading(true);
               getRoomAvaliable(
+                isToken,
                 {
                   checkin: moment(searchField.startDate).format('DD MMM YYYY'),
                   checkout: moment(searchField.endDate).format('DD MMM YYYY'),
@@ -414,6 +416,7 @@ const Kamar = props => {
                 },
                 val => {
                   setRooms([...val.data.data]);
+
                   setOnLoading(false);
                 },
               );
