@@ -1,4 +1,4 @@
-import {View, Text, Pressable} from 'react-native';
+import {View, Text, Pressable, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 import {FlatList} from 'react-native';
 import adjust, {formatter, GrayBold, GrayFade, Oranges} from '../utils';
@@ -8,7 +8,7 @@ import {PermisionStorage} from '../API/Permission';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import {ActivityIndicator} from 'react-native-paper';
 import axios from 'axios';
-import {CetakInvoice} from '../API/functionget';
+import {CetakETicket, CetakInvoice} from '../API/functionget';
 
 const PesananSayaPayment = ({paymentStatus = [], token}) => {
   const [isloading, setIsloading] = useState(null);
@@ -142,6 +142,82 @@ const PesananSayaPayment = ({paymentStatus = [], token}) => {
     }
   };
 
+  const generateEtiket = async (index, value) => {
+    console.log(value, 'eticket');
+    try {
+      // await axios.get()
+      setIsloading(index);
+      const html = `
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+          <title>Static Template</title>
+        </head>
+        <body>
+          <h1>E-Ticket Cek Travel</h1>
+          <h3 style="color: #f05907;">Kode Booking : ${value.booking_code}</h3>
+      
+          <h3>${value.hotel.name}</h3>
+          <p>
+          ${value.hotel.address}
+          </p>
+          <div style="display: flex; width: 100%;">
+            <div style="border: 1px solid orange; width: 50%; padding: 10px;">
+              <p>Check In</p>
+              <p>${value.checkin_date}</p>
+              <p>${value.checkin_time}</p>
+            </div>
+            <div style="border: 1px solid orange; width: 50%; padding: 10px;">
+              <p>Check Out</p>
+              <p>${value.checkout_date}</p>
+              <p>${value.checkout_time}</p>
+            </div>
+          </div>
+          <div>
+            <h3>Booking Details:</h3>
+            <div style="display: flex; justify-content: space-between;">
+              <div>
+                <h4>Kamar:</h4>
+                <p>Total Kamar:${value.total_rooms}</p>
+                <p>Tipe Kamar:${value.rooms}</p>
+              </div>
+              <div>
+                <h4>Addons:</h4>
+                <p>-</p>
+                <p>-</p>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <p>Customer Service</p>
+              <p>087788121312</p>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <p>Customer Service Email</p>
+              <p>cs@cektravel.com</p>
+            </div>
+          </div>
+        </body>
+      </html>
+      `;
+      const options = {
+        html,
+        fileName: `E-ticket_cektravel ${JSON.stringify(new Date().getTime())}`,
+        directory: 'Invoices',
+      };
+      const file = await RNHTMLtoPDF.convert(options);
+      alert('Success' + `PDF saved to ${file.filePath}`);
+      setIsloading(null);
+    } catch (error) {
+      // alert('Error', error.message);
+      console.log(error);
+      setIsloading(null);
+    }
+  };
+
   // console.log(token);
   return paymentStatus.length === 0 ? (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -241,7 +317,14 @@ const PesananSayaPayment = ({paymentStatus = [], token}) => {
                 </Pressable>
               )}
 
-              <Pressable
+              <TouchableOpacity
+                onPress={() =>
+                  PermisionStorage(() =>
+                    CetakETicket(item.id, token, val =>
+                      generateEtiket(index, val),
+                    ),
+                  )
+                }
                 style={{
                   backgroundColor: Oranges,
                   padding: adjust(5),
@@ -250,7 +333,7 @@ const PesananSayaPayment = ({paymentStatus = [], token}) => {
                 <Text style={{color: 'white', fontSize: adjust(10)}}>
                   Cetak e-Ticket
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
         );

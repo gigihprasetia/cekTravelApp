@@ -42,9 +42,10 @@ export default function Pesanan(props) {
       HistoryPayment(dataUser.isAuthenticated.token, val => {
         setMyPayment(val.data.data);
       });
-      WaitPayment(dataUser.isAuthenticated.token, val =>
-        setWaitPayment(val.data.data),
-      );
+      WaitPayment(dataUser.isAuthenticated.token, val => {
+        console.log(val);
+        setWaitPayment(val.data.data);
+      });
     }
   }, [isFocused === true && dataUser.dataUser.statusUser]);
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const APIV2 = axios.create({
-  baseURL: 'https://api.cektravel.com/api/v2',
+  baseURL: 'https://uat-api.cektravel.com/api/v2',
   withCredentials: false,
   headers: {
     Accept: 'application/json',
@@ -9,7 +9,7 @@ export const APIV2 = axios.create({
 });
 
 export const APIV1 = axios.create({
-  baseURL: 'https://api.cektravel.com/api/v1',
+  baseURL: 'https://uat-api.cektravel.com/api/v1',
   withCredentials: false,
   headers: {
     Accept: 'application/json',

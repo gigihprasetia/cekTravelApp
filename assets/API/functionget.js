@@ -104,3 +104,13 @@ export const CetakInvoice = async (id, token = '', callback) => {
     .then(val => callback(val.data.data))
     .catch(err => console.log(err));
 };
+export const CetakETicket = async (id, token = '', callback) => {
+  // console.log(id, token);
+  await APIV2.get(`/customer-sys/transactions/${id}/e-ticket`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then(val => callback(val.data.data))
+    .catch(err => console.log(err));
+};
