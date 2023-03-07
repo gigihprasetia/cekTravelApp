@@ -1,9 +1,148 @@
 import {View, Text, Pressable} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {FlatList} from 'react-native';
 import adjust, {formatter, GrayBold, GrayFade, Oranges} from '../utils';
+import RNFetchBlob from 'rn-fetch-blob';
+import {PermissionsAndroid} from 'react-native';
+import {PermisionStorage} from '../API/Permission';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import {ActivityIndicator} from 'react-native-paper';
+import axios from 'axios';
+import {CetakInvoice} from '../API/functionget';
 
-const PesananSayaPayment = ({paymentStatus = []}) => {
+const PesananSayaPayment = ({paymentStatus = [], token}) => {
+  const [isloading, setIsloading] = useState(null);
+
+  const generatePDFH = async (index, value) => {
+    console.log(value);
+    try {
+      // await axios.get()
+      setIsloading(index);
+      const html = `
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Static Template</title>
+        <style>
+          .template {
+            max-width: 900px;
+          }
+          .text1 {
+            color: black;
+            font-weight: 900;
+            margin-top: 30px;
+          }
+          .text2 {
+            color: #343434;
+          }
+          img {
+            width: 100px;
+            background-size: cover;
+          }
+          body {
+            font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+            padding: 10px;
+          }
+
+          table,
+          th,
+          td {
+            border: 1px solid gray;
+            border-collapse: collapse;
+            text-align: left;
+
+            color: #343434;
+            padding: 6px;
+          }
+        </style>
+      </head>
+
+      <body>
+        <div class="template">
+          <div>
+            <img
+              src="https://omtek.sgp1.cdn.digitaloceanspaces.com/cektravel/public/branding/cek-travek-logo100x.png"
+            />
+            <p class="text1">CekTravel.com</p>
+            <p class="text2">Nomor Invoice: ${value.invoice_number}</p>
+          </div>
+
+          <div style="margin-top: 30px;">
+            <p>Diterbitkan atas nama :</p>
+            <p class="text2">Hotel : ${value.hotel_name}</p>
+            <p class="text2">Tanggal : ${value.transaction_date}</p>
+          </div>
+
+          <div style="margin-top: 30px; margin-bottom: 20px;">
+            <p>Ditagihkan kepada</p>
+            <p class="text2">Nama : ${value.holder_name}</p>
+            <p class="text2">Email : ${value.holder_email}</p>
+          </div>
+
+          <table style="width: 100%;">
+<tr>
+  <th>
+    Nama Kamar
+  </th>
+  <th>Jumlah</th>
+  <th>Harga Permalam</th>
+  <th>Sub Total</th>
+</tr>
+          ${value.rooms.map(
+            (val, index) => `
+            <tr>
+              <td>${val.room_name}</td>
+              <td>${val.total}</td>
+              <td>${formatter(val.price)}</td>
+              <td>${formatter(val.sub_total)}</td>
+            </tr>
+          `,
+          )}
+            <tr>
+              <td colspan="2"></td>
+              <td>Subtotal Harga</td>
+              <td>${formatter(value.base_price)}</td>
+            </tr>
+          </table>
+
+          <div
+            style="
+              margin-top: 50px;
+              width: 100%;
+              display: flex;
+              align-items: flex-end;
+              flex-direction: column;
+            "
+          >
+            <div>
+              <p class="text1">Pajak: ${formatter(value.tax)}</p>
+              <p class="text1">Total Pembayaran: ${formatter(
+                value.final_price,
+              )}</p>
+            </div>
+          </div>
+        </div>
+      </body>
+    </html>
+      `;
+      const options = {
+        html,
+        fileName: `invoice_cektravel ${JSON.stringify(new Date().getTime())}`,
+        directory: 'Invoices',
+      };
+      const file = await RNHTMLtoPDF.convert(options);
+      alert('Success' + `PDF saved to ${file.filePath}`);
+      setIsloading(null);
+    } catch (error) {
+      // alert('Error', error.message);
+      console.log(error);
+      setIsloading(null);
+    }
+  };
+
+  // console.log(token);
   return paymentStatus.length === 0 ? (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Belum ada Pemesanan</Text>
@@ -14,7 +153,7 @@ const PesananSayaPayment = ({paymentStatus = []}) => {
       contentContainerStyle={{paddingBottom: adjust(40)}}
       showsVerticalScrollIndicator={false}
       renderItem={({item, index}) => {
-        console.log(item);
+        // console.log(item);
         return (
           <View
             style={{
@@ -76,16 +215,32 @@ const PesananSayaPayment = ({paymentStatus = []}) => {
                 justifyContent: 'flex-end',
                 alignItems: 'center',
               }}>
-              <Pressable>
-                <Text
+              {isloading === index ? (
+                <ActivityIndicator size={adjust(10)} color={Oranges} />
+              ) : (
+                <Pressable
                   style={{
-                    color: Oranges,
-                    fontSize: adjust(10),
-                    marginHorizontal: adjust(5),
-                  }}>
-                  Cetak Invoice
-                </Text>
-              </Pressable>
+                    display: 'flex',
+                    padding: adjust(10),
+                  }}
+                  onPress={() =>
+                    PermisionStorage(() =>
+                      CetakInvoice(item.id, token, val =>
+                        generatePDFH(index, val),
+                      ),
+                    )
+                  }>
+                  <Text
+                    style={{
+                      color: Oranges,
+                      fontSize: adjust(10),
+                      marginHorizontal: adjust(5),
+                    }}>
+                    Cetak Invoice
+                  </Text>
+                </Pressable>
+              )}
+
               <Pressable
                 style={{
                   backgroundColor: Oranges,

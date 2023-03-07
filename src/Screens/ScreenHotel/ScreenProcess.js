@@ -22,6 +22,7 @@ import RenderHTML from 'react-native-render-html';
 import {TouchableOpacity} from 'react-native';
 import {useSelector} from 'react-redux';
 
+
 const ScreenProcess = props => {
   const [dataPayment, setDataPayment] = useState({
     status: false,

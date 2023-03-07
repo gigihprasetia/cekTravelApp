@@ -3,8 +3,10 @@ import React from 'react';
 import {FlatList} from 'react-native';
 import adjust, {formatter, GrayBold, GrayFade, Oranges} from '../utils';
 import {Image} from 'react-native';
+import RNFetchBlob from 'rn-fetch-blob';
+const MenungguPembayaran = ({paymentWait = [], navigation}) => {
+  console.log(paymentWait);
 
-const MenungguPembayaran = ({paymentWait = []}) => {
   return paymentWait.length === 0 ? (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Belum ada Pemesanan</Text>
@@ -15,7 +17,7 @@ const MenungguPembayaran = ({paymentWait = []}) => {
       contentContainerStyle={{paddingBottom: adjust(40)}}
       showsVerticalScrollIndicator={false}
       renderItem={({item, index}) => {
-        console.log(item);
+        // console.log(item);
         return (
           <View
             style={{
@@ -96,6 +98,14 @@ const MenungguPembayaran = ({paymentWait = []}) => {
                 </Text>
               </Pressable>
               <Pressable
+                onPress={() => {
+                  navigation.navigate('Hotel', {
+                    screen: 'Process',
+                    params: {
+                      booking_code: item.booking_code,
+                    },
+                  });
+                }}
                 style={{
                   backgroundColor: Oranges,
                   padding: adjust(5),

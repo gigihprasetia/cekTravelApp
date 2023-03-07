@@ -2,7 +2,6 @@ import axios from 'axios';
 import {APIV1, APIV2} from './index';
 
 export const getHotelAvaliable = async (token = null, data, callback) => {
-  console.log(token);
   await APIV2.post('/hotels-available', data, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -13,7 +12,6 @@ export const getHotelAvaliable = async (token = null, data, callback) => {
 };
 
 export const getRoomAvaliable = async (token = null, data, callback) => {
-  console.log(token);
   await APIV2.post('/rooms-available', data, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -23,7 +21,6 @@ export const getRoomAvaliable = async (token = null, data, callback) => {
     .catch(err => console.log(err));
 };
 export const getRoomLayoutAvaliable = async (token = null, data, callback) => {
-  console.log(token);
   await APIV2.post('/layouts-available-index', data, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -33,7 +30,7 @@ export const getRoomLayoutAvaliable = async (token = null, data, callback) => {
     .catch(err => console.log(err));
 };
 export const inquiryProcess = async (token = null, data, callback) => {
-  console.log(token);
+  //
   await APIV2.post('/booking/inquiry-process', data, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -43,8 +40,12 @@ export const inquiryProcess = async (token = null, data, callback) => {
     .catch(err => console.log(err));
 };
 export const processPayment = async (token = null, data, callback) => {
-  console.log(token);
-  await APIV2.post('/booking/process', data)
+  //
+  await APIV2.post('/booking/process', data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then(process => callback(process))
     .catch(err => console.log(err));
 };

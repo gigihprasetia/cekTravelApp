@@ -29,6 +29,24 @@ const initialState = {
     room_type: '',
     descriptionKamar: '',
   },
+  facilityRoom: [
+    {
+      name: 'Garden View',
+      status: true,
+    },
+    {
+      name: 'Kolam Renang',
+      status: true,
+    },
+    {
+      name: 'Televisi',
+      status: true,
+    },
+    {
+      name: 'Wi-fi',
+      status: true,
+    },
+  ],
 };
 
 const HotelReducers = (state = initialState, actions) => {

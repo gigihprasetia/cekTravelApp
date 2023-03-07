@@ -46,12 +46,9 @@ export default function Pesanan(props) {
         setWaitPayment(val.data.data),
       );
     }
-    console.log('focus');
   }, [isFocused === true && dataUser.dataUser.statusUser]);
 
   const {navigation} = props;
-
-  console.log(myPayment, waitPayment);
 
   return !dataUser.dataUser.statusUser ? (
     <View
@@ -136,9 +133,13 @@ export default function Pesanan(props) {
       </View>
       {/* <Text>jaja</Text> */}
       {optionPayment ? (
-        <MenungguPembayaran paymentWait={waitPayment} />
+        <MenungguPembayaran paymentWait={waitPayment} navigation={navigation} />
       ) : (
-        <PesananSayaPayment paymentStatus={myPayment} />
+        <PesananSayaPayment
+          paymentStatus={myPayment}
+          navigation={navigation}
+          token={dataUser.isAuthenticated.token}
+        />
       )}
     </SafeAreaView>
   );

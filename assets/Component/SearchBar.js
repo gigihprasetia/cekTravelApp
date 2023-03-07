@@ -1,7 +1,9 @@
 import {Text, TextInput, TouchableOpacity, View} from 'react-native';
-import React, {Component} from 'react';
+import React, {Component, useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import {debounce} from 'lodash';
 import adjust, {
+  GrayBold,
   GrayFade,
   Greens,
   HeightScreen,
@@ -12,19 +14,53 @@ import moment from 'moment';
 import {DatePickerModal} from 'react-native-paper-dates';
 import ModalComponent from './ModalComponent';
 import Icon from 'react-native-vector-icons/Entypo';
+import {locationHotel} from '../API/functionget';
 
 const SearchBar = props => {
   const HotelStore = useSelector(state => state.HotelReducers.hotelRules);
   const dispatch = useDispatch();
   const {navigation} = props;
-  // const {dataHotel} = props;
   const [open, setOpen] = React.useState(false);
   const [inputval, setInputVal] = React.useState('Hotel di sekitar anda');
   const [autoActive, setAutoActive] = React.useState(false);
-  // const [autoComplete, setAutoComplete] = useState({
-  //   status: false,
-  //   data: [],
-  // });
+  const isToken = useSelector(
+    state => state.UserReducers.isAuthenticated.token,
+  );
+  const [stateType, setStateType] = React.useState({
+    isLoading: false,
+    inputValue: '',
+    dataQuery: [
+      {
+        code: 'NOT',
+        name: 'Pencarian Tidak Ditemukan',
+        type: null,
+      },
+    ],
+  });
+
+  const onchangeText = e => {
+    setStateType({
+      ...stateType,
+      isLoading: true,
+      inputValue: e,
+    });
+    debounceReasponse(e);
+  };
+
+  const debounceReasponse = useCallback(
+    debounce(e => {
+      locationHotel(isToken, val => {
+        setStateType({
+          inputValue: e,
+          isLoading: false,
+          dataQuery: val.data.data,
+        });
+      });
+    }, 1000),
+    [],
+  );
+
+  // console.log(stateType);
 
   const onDismiss = React.useCallback(() => {
     setOpen(false);
@@ -45,12 +81,12 @@ const SearchBar = props => {
     [setOpen, HotelStore.startDate, HotelStore.endDate],
   );
 
-  const AutocompleteLocation = React.useMemo(() => {
-    const datas = ['Yogyakarta', 'Bantul', 'Gunungkidul'].filter(val => {
-      return val.toLowerCase().search(inputval.toLowerCase()) != -1;
-    });
-    return datas;
-  }, [inputval]);
+  // const AutocompleteLocation = React.useMemo(() => {
+  //   const datas = ['Yogyakarta', 'Bantul', 'Gunungkidul'].filter(val => {
+  //     return val.toLowerCase().search(inputval.toLowerCase()) != -1;
+  //   });
+  //   return datas;
+  // }, [inputval]);
 
   return (
     <View
@@ -92,12 +128,21 @@ const SearchBar = props => {
             <TextInput
               style={{paddingHorizontal: 10, flex: 1, color: GrayFade}}
               placeholder={'location'}
-              value={inputval}
-              onChangeText={e => setInputVal(e)}
+              value={stateType.inputValue}
+              onChangeText={e => {
+                setStateType({
+                  ...stateType,
+                  isLoading: true,
+                  inputValue: e,
+                });
+                onchangeText(e);
+              }}
               onFocus={() => {
-                setInputVal('');
                 setAutoActive(true);
               }}
+              // onBlur={() => {
+              //   setAutoActive(false);
+              // }}
             />
           </View>
           {/* AUTOCOMPLETE */}
@@ -114,16 +159,35 @@ const SearchBar = props => {
                 borderColor: 'gray',
                 borderRadius: 5,
               }}>
-              {AutocompleteLocation.map((val, index) => {
+              {stateType.dataQuery.map((val, index) => {
                 return (
                   <TouchableOpacity
                     key={index}
-                    style={{paddingVertical: 5}}
+                    style={{
+                      paddingVertical: 5,
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}
                     onPress={() => {
-                      setInputVal(val);
-                      setAutoActive(false);
+                      if (val.type === null) {
+                        return null;
+                      } else {
+                        setAutoActive(false);
+                        setStateType({
+                          ...stateType,
+                          inputValue: val.name,
+                        });
+                      }
                     }}>
-                    <Text>{val}</Text>
+                    <View>
+                      <Text style={{fontSize: adjust(10), color: GrayBold}}>
+                        {val.name}
+                      </Text>
+                    </View>
+                    <Text style={{fontSize: adjust(8), color: Oranges}}>
+                      {val.type}
+                    </Text>
                   </TouchableOpacity>
                 );
               })}
@@ -432,7 +496,7 @@ const SearchBar = props => {
               onPress={() => {
                 dispatch({
                   type: 'locationHotel',
-                  data: inputval,
+                  data: stateType.inputValue,
                 });
                 navigation.push('FilterHotel');
               }}
